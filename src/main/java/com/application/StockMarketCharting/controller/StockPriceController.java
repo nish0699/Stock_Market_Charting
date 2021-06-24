@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.application.StockMarketCharting.Service.impl.StockPriceServiceImpl;
 import com.application.StockMarketCharting.dto.CompanyCompareRequestDto;
+import com.application.StockMarketCharting.dto.JsonDto;
 import com.application.StockMarketCharting.dto.SectorCompareRequestDto;
 import com.application.StockMarketCharting.dto.StockPriceDto;
 
+import net.minidev.json.JSONObject;
+
 @RestController
+@CrossOrigin(origins= "http://localhost:3000")
 @RequestMapping("/stockprices")
 public class StockPriceController 
 {
@@ -72,7 +78,7 @@ public class StockPriceController
 		return ResponseEntity.ok(stockPriceDtos);
 	}
 //	4
-	@PostMapping(path = "")
+	@PostMapping(path = "/")
 	public ResponseEntity<?> save(@RequestBody List<StockPriceDto> stockPriceDtos) {
 		
 		List<StockPriceDto> stockList=stockPriceService.save(stockPriceDtos);
@@ -86,6 +92,8 @@ public class StockPriceController
 				.body(stockList);
 	}
 //	5
+	
+	
 	@PutMapping(path = "")
 	public ResponseEntity<StockPriceDto> update(@RequestBody StockPriceDto stockPriceDto)
 //			throws StockPriceNotFoundException
@@ -102,6 +110,23 @@ public class StockPriceController
 	@DeleteMapping(path = "/{id}")
 	public void deleteById(@PathVariable int id) {
 		stockPriceService.deleteById(id);
+	}
+	
+	@PostMapping(path="/import")/*, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)*/
+	public ResponseEntity<JsonDto> saveAll( @RequestBody JSONObject[] jsonObj)
+	{
+		
+		JsonDto summary=stockPriceService.saveAll(jsonObj);
+//		for(StockPriceDto stockPrice: stockPriceList)
+//			System.out.println(stockPrice);
+		for(JSONObject j: jsonObj)
+		{
+			System.out.println(j);
+		}
+//		if(stockPriceList.isEmpty())
+//			return null;
+		System.out.println(summary.toString());
+		return ResponseEntity.ok(summary);
 	}
 	
 //	7

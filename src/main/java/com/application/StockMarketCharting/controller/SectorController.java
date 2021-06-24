@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import com.application.StockMarketCharting.dto.CompanyDto;
 import com.application.StockMarketCharting.dto.SectorDto;
 
 @RestController
+@CrossOrigin(origins= "http://localhost:3000")
 @RequestMapping("/sectors")
 public class SectorController 
 {
@@ -52,11 +54,11 @@ public class SectorController
 				.body(addSector);
 	}
 //	4
-	@PutMapping(path = "/update")
-	public ResponseEntity<SectorDto> update(@RequestBody SectorDto sectorDto)
+	@PutMapping(path = "/update/{id}")
+	public ResponseEntity<SectorDto> update(@RequestBody SectorDto sectorDto,  @PathVariable int id)
 //			throws SectorNotFoundException
 	{
-		
+		sectorDto.setId(id);
 		SectorDto updatedSectorDto = sectorService.updateSector(sectorDto);
 		if(updatedSectorDto == null) {
 			return null;

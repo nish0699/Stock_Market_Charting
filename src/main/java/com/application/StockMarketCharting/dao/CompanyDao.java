@@ -12,13 +12,14 @@ import org.springframework.stereotype.Repository;
 
 import com.application.StockMarketCharting.entity.Company;
 @Repository
+@Transactional
 public interface CompanyDao extends JpaRepository<Company,Integer>{
 
 	public Company findById(int id);
 	public List<Company> findByCompanyNameIgnoreCaseContaining(String companyName);
 	public Company findByCompanyName(String companyName);
 	public Company findByCompanyCode(String companyCode);
-	@Transactional
+	
 	@Modifying
 //	@Query(value="delete from stock_company s where s.company_id=2")
 	public void deleteById(int id);

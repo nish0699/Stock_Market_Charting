@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 //import org.springframework.data.annotation.Id;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -19,9 +18,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
-import com.application.StockMarketCharting.dao.SectorDao;
 import com.sun.istack.NotNull;
 
 @Entity

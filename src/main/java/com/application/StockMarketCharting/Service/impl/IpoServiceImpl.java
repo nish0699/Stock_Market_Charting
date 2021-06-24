@@ -60,15 +60,15 @@ public class IpoServiceImpl implements IpoService {
 	}
 
 	@Override
-	public IpoDto update(IpoDto ipoDto) {
+	public IpoDto update(IpoDto ipoDto,int id) {
 		
 //		System.out.println(ipoDto.toString());
 		Ipo ipo=ipoMapper.toIpo(ipoDto);
 //		System.out.println(ipo.toString());
 
-		if(ipoRepository.findById(ipoDto.getId())==null)
+		if(ipoRepository.findById(id)==null)
 			return null;
-		Ipo updateIpo=ipoRepository.findById(ipoDto.getId());
+		Ipo updateIpo=ipoRepository.findById(id);
 //		System.out.println(updateIpo);
 		
 		updateIpo.setCompanyName(ipo.getCompanyName());

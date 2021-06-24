@@ -8,7 +8,7 @@ public interface IpoService {
 	public List<IpoDto> findAll();
 	public IpoDto findById(int id);
 	public IpoDto save(IpoDto ipoDto);
-	public IpoDto update(IpoDto ipoDto);
+	public IpoDto update(IpoDto ipoDto,int id);
 	public void deleteById(int id);
 
 }

@@ -10,7 +10,7 @@ import com.application.StockMarketCharting.entity.StockPrice;
 @Repository
 public interface StockPriceDao extends CrudRepository<StockPrice,Integer>{
 	public StockPrice findById(int id);
-
+	
 	public List<StockPrice> findByCompanyCodeAndStockExchanges(String companyCode, String stockExchanges);
-
+	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.application.StockMarketCharting.dto.CompanyDto;
 import com.application.StockMarketCharting.dto.StockExchangeDto;
 
 @RestController
+@CrossOrigin(origins= "http://localhost:3000")
 @RequestMapping("/stock-exchanges")
 public class StockExchangeController 
 {
@@ -46,10 +48,11 @@ public class StockExchangeController
 		return ResponseEntity.ok(stockExchangeService.addStockExchange(stockExchangeDto));
 	}
 //	4
-	@PutMapping(path = "/edit")
-	public ResponseEntity<StockExchangeDto> editStockExchange(@RequestBody StockExchangeDto stockExchangeDto)
+	@PutMapping(path = "/edit/id")
+	public ResponseEntity<StockExchangeDto> editStockExchange(@RequestBody StockExchangeDto stockExchangeDto,@PathVariable int id)
 //			throws StockExchangeNotFoundException 
 	{
+		stockExchangeDto.setId(id);
 		StockExchangeDto updatedStockExchangeDto = stockExchangeService.editStockExchange(stockExchangeDto);
 		if(updatedStockExchangeDto == null) {
 			System.out.println("Stock Exchnage not found at id: "+stockExchangeDto.getId());

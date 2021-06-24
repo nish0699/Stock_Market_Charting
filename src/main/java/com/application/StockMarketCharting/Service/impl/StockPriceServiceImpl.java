@@ -1,10 +1,14 @@
 package com.application.StockMarketCharting.Service.impl;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+//import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +19,15 @@ import com.application.StockMarketCharting.dao.CompanyDao;
 import com.application.StockMarketCharting.dao.StockPriceDao;
 import com.application.StockMarketCharting.dto.CompanyCompareRequestDto;
 import com.application.StockMarketCharting.dto.CompanyDto;
+import com.application.StockMarketCharting.dto.JsonDto;
 import com.application.StockMarketCharting.dto.SectorCompareRequestDto;
 import com.application.StockMarketCharting.dto.StockPriceDto;
 import com.application.StockMarketCharting.entity.Company;
 import com.application.StockMarketCharting.entity.StockPrice;
 import com.application.StockMarketCharting.mapper.StockPriceMapper;
+
+import net.minidev.json.JSONObject;
+//import org.json.JSONObject;
 
 @Service
 public class StockPriceServiceImpl implements StockPriceService {
@@ -57,7 +65,9 @@ public class StockPriceServiceImpl implements StockPriceService {
 		stockPriceRepository.deleteById(id);
 		
 	}
-
+	
+	
+	
 	@Override
 	public List<StockPriceDto> save(List<StockPriceDto> stockPriceDtos) {
 		// TODO Auto-generated method stub
@@ -102,8 +112,9 @@ public class StockPriceServiceImpl implements StockPriceService {
 	public List<StockPriceDto> getStockPricesForSectorComparison(SectorCompareRequestDto compareRequest)
 			throws ParseException 
 	{
-		Date fromDate = new SimpleDateFormat("dd-MM-yyyy").parse(compareRequest.getFromPeriod());
-		Date toDate = new SimpleDateFormat("dd-MM-yyyy").parse(compareRequest.getToPeriod());
+		
+		LocalDate fromDate = LocalDate.parse(compareRequest.getFromPeriod());
+		LocalDate toDate = LocalDate.parse(compareRequest.getToPeriod());
 		List<StockPrice> stockPricesForSector = new ArrayList<>();
 		for(CompanyDto companyDto: sectorService.getCompanies(compareRequest.getSectorName()))
 		{
@@ -111,14 +122,9 @@ public class StockPriceServiceImpl implements StockPriceService {
 					.findByCompanyCodeAndStockExchanges(companyDto.getCompanyCode(), compareRequest.getStockExchangeName());
 			List<StockPrice> filteredList = stockPrices.stream()
 					.filter(stockPrice -> {
-						Date date = null;
-							try {
-								date = new SimpleDateFormat("dd-MM-yyyy").parse(stockPrice.getDate1());
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-						
-						return date.after(fromDate) && date.before(toDate);
+						LocalDate date = LocalDate.parse(stockPrice.getDate1());
+				
+						return date.isAfter(fromDate) && date.isBefore(toDate);
 					})
 					.collect(Collectors.toList());
 			stockPricesForSector.addAll(filteredList);
@@ -131,21 +137,89 @@ public class StockPriceServiceImpl implements StockPriceService {
 	public List<StockPriceDto> getStockPricesForCompanyComparison(CompanyCompareRequestDto compareRequest)
 			throws ParseException 
 	{
-		Date fromDate = new SimpleDateFormat("dd-MM-yyyy").parse(compareRequest.getFromPeriod());
-		Date toDate = new SimpleDateFormat("dd-MM-yyyy").parse(compareRequest.getToPeriod());
+		LocalDate fromDate = LocalDate.parse(compareRequest.getFromPeriod());
+		LocalDate toDate = LocalDate.parse(compareRequest.getToPeriod());
 		List<StockPrice> stockPrices = stockPriceRepository
 				.findByCompanyCodeAndStockExchanges(compareRequest.getCompanyCode(), compareRequest.getStockExchangeName());
 		List<StockPrice> filteredList = stockPrices.stream()
 				.filter(stockPrice -> {
-					Date date = null;
-					try {
-						date = new SimpleDateFormat("dd-MM-yyyy").parse(stockPrice.getDate1());
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-					return date.after(fromDate) && date.before(toDate);
+					LocalDate date=LocalDate.parse(stockPrice.getDate1());
+					
+					
+					return date.isAfter(fromDate) && date.isBefore(toDate);
 				})
 				.collect(Collectors.toList());
+		
+		//check if this works
+		
 		return stockPriceMapper.toStockPriceDtos(filteredList);
+	}
+
+	@Override
+	public JsonDto saveAll(JSONObject[] jsonObj) {
+		// TODO Auto-generated method stub
+		List<StockPrice> saveStockPrice=new ArrayList<>();
+		JsonDto summary=new JsonDto();
+		int count=0;
+		for(JSONObject j: jsonObj)
+		{
+			StockPrice stockPrice=new StockPrice();
+			 // j.keySet();
+			Set<String> keys= j.keySet();
+//			System.out.println(keys);
+			for(String key : keys)
+			{
+//				System.out.println("key= "+key+" Value= "+j.get(key));
+				if(key.equals("Company Code") && j.getAsString(key)!=null)
+				{
+					String code= j.getAsString(key);
+					if(code.length()>0) {
+					stockPrice.setCompanyCode(code.substring(0,6));
+					Company company=companyRepository.findByCompanyCode(code.substring(0, 6));
+					stockPrice.setCompany2(company);
+					count++;
+					
+					}
+				}
+				else if(key.equals("Price Per Share(in Rs)"))
+				{
+					stockPrice.setCurrentPrice((double) Double.parseDouble(j.getAsString(key)));
+				}
+				else if(key.equals("Stock Exchange") && j.getAsString(key)!=null)
+				{
+					stockPrice.setStockExchanges(j.getAsString(key));
+				}
+				else if(key.contains("Date") && j.getAsString(key)!=null) {
+//					System.out.println("date= "+j.getAsString(key));
+					stockPrice.setDate1(j.getAsString(key));
+				}
+				else if(key.equals("Time") && j.getAsString(key)!=null) {
+					stockPrice.setTime1(j.getAsString(key).substring(2));
+				}
+				
+						
+//				System.out.println(.get(key);
+			}
+			if(stockPrice.getCompanyCode()!=null)
+			{
+			System.out.println(stockPrice.toString());
+//			stockPrice=stockPriceRepository.save(stockPrice);
+			saveStockPrice.add(stockPrice);
+			}
+		}
+		List<StockPrice> stockPriceList=(List<StockPrice>) stockPriceRepository.saveAll(saveStockPrice);
+		
+		if(stockPriceList.isEmpty())
+		return null;
+
+		StockPrice stockPriceFirst= stockPriceList.get(0);
+		StockPrice stockPriceLast= stockPriceList.get(stockPriceList.size()-1);
+		summary.setCompanyName(stockPriceFirst.getCompany2().getCompanyName());
+		summary.setCount(count);
+		summary.setStockExchange(stockPriceFirst.getStockExchanges());
+		summary.setFromDate(stockPriceFirst.getDate1());
+		summary.setToDate(stockPriceLast.getDate1());
+		
+		return summary;
 	}
 }

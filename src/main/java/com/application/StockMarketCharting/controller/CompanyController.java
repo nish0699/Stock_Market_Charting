@@ -38,9 +38,12 @@ public class CompanyController
 	public ResponseEntity<CompanyDto> getCompanyDetails(@PathVariable int id)
 	//		throws CompanyNotFoundException
 	{
+//		Integer id1=Integer.parseInt(id);
 		CompanyDto companyDto = companyService.findById(id);
 		if(companyDto == null) {
-		//	throw new CompanyNotFoundException("Company not found at id : " + id);
+			System.out.println("Company not found at id : " + id);
+			return null;
+//			throw new CompanyNotFoundException("Company not found at id : " + id);
 		}
 		return ResponseEntity.ok(companyDto);
 	}
@@ -79,7 +82,7 @@ public class CompanyController
 	}
 //	6
 	@PostMapping(path = "/add-company",consumes="application/json",produces="application/json")
-//	@HystrixCommand(fallbackMethod = "defaultResponse")
+//	@HystrixCommand(fallbackMethod = "defau!ltResponse")
 	public ResponseEntity<CompanyDto> addCompany(@RequestBody CompanyDto companyDto) {
 		
 		CompanyDto addCompany= companyService.addCompany(companyDto);
@@ -92,6 +95,7 @@ public class CompanyController
 	public ResponseEntity<CompanyDto> editCompany(@RequestBody CompanyDto companyDto,@PathVariable int id)
 //			throws CompanyNotFoundException 
 	{
+//		Integer id1=Integer.parseInt(id);
 		CompanyDto updatedCompanyDto = companyService.editCompany(companyDto,id);
 		if(updatedCompanyDto == null) {
 //			throw new CompanyNotFoundException("Company not found at id : " + companyDto.getId());

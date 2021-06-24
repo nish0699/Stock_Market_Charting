@@ -4,8 +4,11 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.application.StockMarketCharting.dto.CompanyCompareRequestDto;
+import com.application.StockMarketCharting.dto.JsonDto;
 import com.application.StockMarketCharting.dto.SectorCompareRequestDto;
 import com.application.StockMarketCharting.dto.StockPriceDto;
+
+import net.minidev.json.JSONObject;
 
 public interface StockPriceService {
 	public List<StockPriceDto> findAll();
@@ -15,5 +18,5 @@ public interface StockPriceService {
 	public StockPriceDto update(StockPriceDto stockPriceDto);
 	public List<StockPriceDto> getStockPricesForCompanyComparison(CompanyCompareRequestDto compareRequest) throws ParseException;
 	public List<StockPriceDto> getStockPricesForSectorComparison(SectorCompareRequestDto compareRequest) throws ParseException;
-
+	public JsonDto saveAll(JSONObject[] jsonObj);
 }
