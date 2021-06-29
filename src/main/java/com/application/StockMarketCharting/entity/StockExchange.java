@@ -34,7 +34,6 @@ public class StockExchange {
 	@JoinTable(name="stock_company", 
 			joinColumns={@JoinColumn(name="stock_id")}
 			,inverseJoinColumns= {@JoinColumn(name="company_id")})
-
 	List<Company> companyList;
 //
 	public StockExchange() {}

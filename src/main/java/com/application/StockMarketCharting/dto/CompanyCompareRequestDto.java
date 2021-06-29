@@ -14,8 +14,6 @@ public class CompanyCompareRequestDto
 	private String fromPeriod;
 	private String toPeriod;
 	private String periodicity;
-	
-	
 	public String getCompanyCode() {
 		return companyCode;
 	}
@@ -46,6 +44,12 @@ public class CompanyCompareRequestDto
 	public void setPeriodicity(String periodicity) {
 		this.periodicity = periodicity;
 	}
+	@Override
+	public String toString() {
+		return "CompanyCompareRequestDto [companyCode=" + companyCode + ", stockExchangeName=" + stockExchangeName
+				+ ", fromPeriod=" + fromPeriod + ", toPeriod=" + toPeriod + ", periodicity=" + periodicity + "]";
+	}
+	
 	
 	
 }

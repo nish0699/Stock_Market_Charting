@@ -63,6 +63,11 @@ public class CompanyServiceImpl implements CompanyService{
 	@Override
 	public List<CompanyDto> getMatchingCompanies(String pattern) {
 	
+		if(pattern=="" || pattern ==null)
+		{
+			List<Company> companies= companyRepository.findAll();
+			return companyMapper.toCompanyDtos(companies);
+		}
 		List<Company> companyList= companyRepository.findByCompanyNameIgnoreCaseContaining(pattern);
 		return companyMapper.toCompanyDtos(companyList);
 		
@@ -72,9 +77,7 @@ public class CompanyServiceImpl implements CompanyService{
 	public CompanyDto addCompany(CompanyDto companyDto) {
 		
 		
-		//System.out.println("Company dto orignal"+companyDto);
 		Company company= companyMapper.toCompany(companyDto);
-		//System.out.println("Company "+company);
 		
 		if(sectorRepository.findBySectorName(company.getSector())==null)
 		{
@@ -86,7 +89,6 @@ public class CompanyServiceImpl implements CompanyService{
 		
 		
 		Company addCompany =companyRepository.findByCompanyName(company.getCompanyName());
-//		System.out.println("Company to add "+addCompany);
 		
 		if(addCompany==null)
 		{
@@ -94,7 +96,6 @@ public class CompanyServiceImpl implements CompanyService{
 			company=companyRepository.save(company);
 		}catch(Exception E)
 		{
-//			System.out.println(E);
 			return null;
 		}
 			return companyMapper.toCompanyDto(company);
@@ -104,16 +105,12 @@ public class CompanyServiceImpl implements CompanyService{
 
 	@Override
 	public CompanyDto editCompany(CompanyDto companyDto,int id) {
-		// TODO Auto-generated method stub
 		
 		Company company= companyMapper.toCompany(companyDto);
 		Company updateCompany=companyRepository.findById(id);
-//		System.out.println("Orignal -"+company);
-//		System.out.println("Orignal 1 -"+updateCompany);
 		
 		if(updateCompany!=null)
 		{
-//			System.out.println("company found at id: "+id);
 			updateCompany.setCompanyName(company.getCompanyName());
 			updateCompany.setCompanyCode(company.getCompanyCode());
 			updateCompany.setTurnover(company.getTurnover());
@@ -133,7 +130,6 @@ public class CompanyServiceImpl implements CompanyService{
 
 	@Override
 	public void deleteCompany(int id) {
-		// TODO Auto-generated method stub
 		Company company = companyRepository.findById(id);
 		System.out.println("\n"+company.toString()+"\n");
 		if(company!=null)
@@ -146,29 +142,19 @@ public class CompanyServiceImpl implements CompanyService{
 	}
 	@Override
 	public CompanyDto addIpoToCompany(String companyName, IpoDto ipoDto) {
-		// TODO Auto-generated method stub
 		Ipo ipo=ipoMapper.toIpo(ipoDto);
-//		System.out.println(ipo.toString()+"\n");
 		Company company=companyRepository.findByCompanyName(companyName);
-//		System.out.println(company.toString());
 		if(company==null)
 			return null;
-		//after mapping
 		ipo.setCompany1(companyRepository.findByCompanyName(companyName));
 		ipo=ipoRepository.save(ipo);
-//		company.getIpoList().add(ipo);
-//		System.out.println(ipo.toString()+"\n");
 		company.addIpo(ipo);
 		company=companyRepository.save(company);
-//		for(Ipo i: company.getIpoList())
-//			System.out.println(i.toString());
 		return companyMapper.toCompanyDto(company);
-//		return null;
 	}
 
 	@Override
 	public List<IpoDto> getCompanyIpoDetails(int id) {
-//		// TODO Auto-generated method stub
 		Company company=companyRepository.findById(id);
 		if(company==null)
 			return null;
@@ -177,40 +163,29 @@ public class CompanyServiceImpl implements CompanyService{
 		for(Ipo i:ipoList)
 			System.out.println(i.toString());
 		return ipoMapper.toIpoDtos(ipoList);
-//		return null;
-		
-		
 	}
 
 	@Override
 	public CompanyDto addStockPriceToCompany(String companyCode, StockPriceDto stockPriceDto) {
-		// TODO Auto-generated method stub
 		Company company= companyRepository.findByCompanyCode(companyCode);
-//		System.out.println(stockPriceDto.toString());
 		StockPrice stockPrice =stockPriceMapper.toStockPrice(stockPriceDto);
-//		System.out.println(stockPrice.toString()+"\n");
 		if(company==null)
 			return null;
 		stockPrice.setCompany2(company);
 		stockPrice=stockPriceRepository.save(stockPrice);
 		company.addStockPrice(stockPrice);
 		company=companyRepository.save(company);
-//		for(StockPrice s: company.getStockPriceList())
-//			System.out.println(s.toString());
 		return companyMapper.toCompanyDto(company);
-//		return null;
 	}
 
 	@Override
 	public List<StockPriceDto> getStockPrices(String companyName) {
 			Company company=companyRepository.findByCompanyName(companyName);
-//			System.out.println(company.toString());
 			if(company==null)
 				return null;
 			
 			List<StockPrice> stockPriceList=company.getStockPriceList();
 			return stockPriceMapper.toStockPriceDtos(stockPriceList);
-//			return null;
 	}
 
 

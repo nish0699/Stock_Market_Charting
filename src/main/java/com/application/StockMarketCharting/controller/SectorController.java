@@ -26,24 +26,19 @@ public class SectorController
 {
 	@Autowired
 	private SectorServiceImpl sectorService;
-//	1
 	@GetMapping(path = "")
 	public ResponseEntity<List<SectorDto>> findAll() {
 		
 		return ResponseEntity.ok(sectorService.findAll());
 	}
-//	2
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<SectorDto> findById(@PathVariable int id)
-//			throws SectorNotFoundException 
 	{
 		SectorDto sectorDto = sectorService.findById(id);
 		if(sectorDto == null) {
-//			throw new SectorNotFoundException("Sector not found for id : " + id);
 		}
 		return ResponseEntity.ok(sectorDto);
 	}
-//	3
 	@PostMapping(path = "/add")
 	public ResponseEntity<SectorDto> save(@RequestBody SectorDto sectorDto) {
 		SectorDto addSector=sectorService.addSector(sectorDto);
@@ -53,48 +48,35 @@ public class SectorController
 				.status(HttpStatus.CREATED)
 				.body(addSector);
 	}
-//	4
 	@PutMapping(path = "/update/{id}")
 	public ResponseEntity<SectorDto> update(@RequestBody SectorDto sectorDto,  @PathVariable int id)
-//			throws SectorNotFoundException
 	{
 		sectorDto.setId(id);
 		SectorDto updatedSectorDto = sectorService.updateSector(sectorDto);
 		if(updatedSectorDto == null) {
 			return null;
-//			throw new SectorNotFoundException("Sector not found for id : " + sectorDto.getId());
 		}
 		return ResponseEntity.ok(updatedSectorDto);
 	}
-//	5
 	@DeleteMapping(path = "/{id}")
 	public void deleteById(@PathVariable int id) {
 		sectorService.deleteById(id);
 	}
-//	6
 	@GetMapping(path = "/{sectorName}/companies")
 	public ResponseEntity<List<CompanyDto>> getCompanies(@PathVariable String sectorName)
-//			throws SectorNotFoundException 
 	{
 		List<CompanyDto> companyDtos = sectorService.getCompanies(sectorName);
 		if(companyDtos == null) {
-//			throw new SectorNotFoundException("Sector not found for id : " + id);
 		}
 		return ResponseEntity.ok(companyDtos);
 	}
-//}
 	
-	/* Feign Client Mapping */
-//	7	
 	@PostMapping(path = "/{sectorName}/add-company")
 	public void addCompanyToSector(@PathVariable String sectorName, @RequestBody CompanyDto companyDto)
-//			throws SectorNotFoundException 
 	{
 		SectorDto sectorDto = sectorService.addCompanyToSector(sectorName, companyDto);
 		if(sectorDto == null) {
-//			throw new SectorNotFoundException("Sector not found with name : " + sectorName);
+			
 		}
 	}
 }
-//}
-//

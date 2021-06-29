@@ -24,12 +24,8 @@ public class SectorServiceImpl implements SectorService{
 	@Autowired
 	SectorDao sectorRepository;
 	
-//	@Autowired
-//	CompanyDao companyRepository;
-	
 	@Autowired
 	CompanyMapper companyMapper;
-//	
 	@Override
 	public SectorDto save(SectorDto sectorDto) {
 		Sector sector=sectorMapper.toSector(sectorDto);
@@ -39,14 +35,12 @@ public class SectorServiceImpl implements SectorService{
 
 	@Override
 	public List<SectorDto> findAll() {
-//		try {}
 		List<Sector> sectorList= (List<Sector>) sectorRepository.findAll();
 		return sectorMapper.toSectorDtos(sectorList);
 	}
 
 	@Override
 	public SectorDto findById(int id) {
-		// TODO Auto-generated method stub
 		
 		Sector sector= sectorRepository.findById(id);
 		if(sector==null)
@@ -57,7 +51,6 @@ public class SectorServiceImpl implements SectorService{
 
 	@Override
 	public void deleteById(int id) {
-		// TODO Auto-generated method stub
 		
 		sectorRepository.deleteById(id);
 		
@@ -67,7 +60,6 @@ public class SectorServiceImpl implements SectorService{
 
 	@Override
 	public SectorDto addCompanyToSector(String sectorName, CompanyDto companyDto) {
-		// TODO Auto-generated method stub
 		Sector sector= sectorRepository.findBySectorName(sectorName);
 		Company company= companyMapper.toCompany(companyDto);
 		if(sector==null)
@@ -83,7 +75,6 @@ public class SectorServiceImpl implements SectorService{
 
 	@Override
 	public SectorDto addSector(SectorDto sector) {
-		// TODO Auto-generated method stub
 		
 		Sector addSector=sectorMapper.toSector(sector);
 		if(sectorRepository.findBySectorName(sector.getSectorName())==null)
@@ -97,7 +88,6 @@ public class SectorServiceImpl implements SectorService{
 
 	@Override
 	public SectorDto updateSector(SectorDto sector) {
-		// TODO Auto-generated method stub
 		Sector updateSector=sectorRepository.findById(sector.getId());
 		if(updateSector!=null)
 		{

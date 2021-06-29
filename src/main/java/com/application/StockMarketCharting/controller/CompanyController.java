@@ -26,28 +26,23 @@ public class CompanyController
 {
 	@Autowired
 	private CompanyService companyService;
-//	1
 	@GetMapping(path = "")
 	public ResponseEntity<List<CompanyDto>> getCompanies() 
 	{
 		return ResponseEntity
 				.ok(companyService.getCompanies());
 	}
-//	2
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<CompanyDto> getCompanyDetails(@PathVariable int id)
-	//		throws CompanyNotFoundException
+
 	{
-//		Integer id1=Integer.parseInt(id);
 		CompanyDto companyDto = companyService.findById(id);
 		if(companyDto == null) {
 			System.out.println("Company not found at id : " + id);
 			return null;
-//			throw new CompanyNotFoundException("Company not found at id : " + id);
 		}
 		return ResponseEntity.ok(companyDto);
 	}
-//	3
 	@GetMapping(path = "/match/{pattern}")
 	public ResponseEntity<List<CompanyDto>> getMatchingCompanies(@PathVariable String pattern) 
 	{
@@ -56,20 +51,17 @@ public class CompanyController
 //	4
 	@GetMapping(path = "/{id}/ipos")
 	public ResponseEntity<List<IpoDto>> getCompanyIpoDetails(@PathVariable int id)
-//			throws CompanyNotFoundException 
 	{
 		
 		List<IpoDto> ipoDtos = companyService.getCompanyIpoDetails(id);
 		
 		if(ipoDtos == null) {
-	//		throw new CompanyNotFoundException("Company not found at id : " + id);
 		}
 		return ResponseEntity.ok(ipoDtos);
 	}
 //	5
 	@GetMapping(path = "/{companyName}/stockPrices")
 	public ResponseEntity<List<StockPriceDto>> getStockPrices(@PathVariable String companyName)
-		//	throws CompanyNotFoundException
 	{
 		List<StockPriceDto> stockPriceDtos = companyService.getStockPrices(companyName);
 		
@@ -78,11 +70,8 @@ public class CompanyController
 		}
 		return ResponseEntity.ok(stockPriceDtos);
 		
-//		return null;
 	}
-//	6
 	@PostMapping(path = "/add-company",consumes="application/json",produces="application/json")
-//	@HystrixCommand(fallbackMethod = "defau!ltResponse")
 	public ResponseEntity<CompanyDto> addCompany(@RequestBody CompanyDto companyDto) {
 		
 		CompanyDto addCompany= companyService.addCompany(companyDto);
@@ -90,20 +79,15 @@ public class CompanyController
 			return null;
 		return ResponseEntity.ok(addCompany);
 	}
-//	7
 	@PutMapping(path = "/edit-company/{id}")
 	public ResponseEntity<CompanyDto> editCompany(@RequestBody CompanyDto companyDto,@PathVariable int id)
-//			throws CompanyNotFoundException 
 	{
-//		Integer id1=Integer.parseInt(id);
 		CompanyDto updatedCompanyDto = companyService.editCompany(companyDto,id);
 		if(updatedCompanyDto == null) {
-//			throw new CompanyNotFoundException("Company not found at id : " + companyDto.getId());
 			System.out.println("Company not found at id: "+companyDto.getId());
 		}
 		return ResponseEntity.ok(updatedCompanyDto);
 	}
-//	8
 	@DeleteMapping(path = "/{id}")
 	public void deleteCompany(@PathVariable int id) {
 		try 
@@ -114,47 +98,27 @@ public class CompanyController
 			System.out.println(e);
 		}
 		
-//		companyService.deleteCompany(id);
 		}
 
-	/* Feign Client Mappings */
-//	9
 	@PostMapping(path = "/{companyName}/add-ipo")
 	public ResponseEntity<?> addIpoToCompany(@PathVariable String companyName, @RequestBody IpoDto ipoDto)
-//			throws CompanyNotFoundException
 	{
 		CompanyDto companyDto = companyService.addIpoToCompany(companyName, ipoDto);
 		if(companyDto == null) {
-//			return null;
 			
 			System.out.println("Ipo not added");
 			return null;
-//			throw new CompanyNotFoundException("Company not with name : " + companyName);
 		}
 		return ResponseEntity.ok(ipoDto);
 	}
 
-//	10
 	@PostMapping(path = "/{companyCode}/stockPrices")
 	public ResponseEntity<?> addStockPriceToCompany(@PathVariable String companyCode, @RequestBody StockPriceDto stockPriceDto) 
-//			throws CompanyNotFoundException
 	{
 		CompanyDto companyDto = companyService.addStockPriceToCompany(companyCode, stockPriceDto);
 		if(companyDto == null) {
-//			throw new CompanyNotFoundException("Company not with code : " + companyCode);
 			return null;
 		}
 		return ResponseEntity.ok(companyDto);
 	}
 }
-//	
-//	/* Feign Client Default Response */
-//	11
-//	public ResponseEntity<?> defaultResponse(@RequestBody CompanyDto companyDto) {
-//		String err = "Fallback error as the microservice is down.";
-//		return ResponseEntity
-//				.status(HttpStatus.SERVICE_UNAVAILABLE)
-//				.body(err);
-//	}
-//}
-

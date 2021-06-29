@@ -22,6 +22,7 @@ import com.application.StockMarketCharting.dto.CompanyCompareRequestDto;
 import com.application.StockMarketCharting.dto.JsonDto;
 import com.application.StockMarketCharting.dto.SectorCompareRequestDto;
 import com.application.StockMarketCharting.dto.StockPriceDto;
+import com.application.StockMarketCharting.entity.StockPrice;
 
 import net.minidev.json.JSONObject;
 
@@ -37,24 +38,23 @@ public class StockPriceController
 	public ResponseEntity<List<StockPriceDto>> findAll() {
 		return ResponseEntity.ok(stockPriceService.findAll());
 	}
-//	1
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<StockPriceDto> findById(@PathVariable int id)
-//			throws StockPriceNotFoundException 
 	{
 		StockPriceDto stockPriceDto = stockPriceService.findById(id);
 		if(stockPriceDto == null) {
-//			throw new StockPriceNotFoundException("Stock Price Not Found with id : " + id);
 		}
 		return ResponseEntity.ok(stockPriceDto);
 	}
-//	2
-	@GetMapping(path = "/compareCompany")
+	@PostMapping(path = "/compareCompany")
 	public ResponseEntity<?> companyComparison(@RequestBody CompanyCompareRequestDto compareRequest)
 	{
+		System.out.println(compareRequest.toString());
 		List<StockPriceDto> stockPriceDtos = null;
 		try {
 			stockPriceDtos = stockPriceService.getStockPricesForCompanyComparison(compareRequest);
+			for(StockPriceDto s: stockPriceDtos)
+				System.out.println("stockprice=>"+s);
 		} catch (ParseException e) {
 			return ResponseEntity
 					.status(HttpStatus.BAD_REQUEST)
@@ -62,9 +62,7 @@ public class StockPriceController
 		}
 		return ResponseEntity.ok(stockPriceDtos);
 	}
-////3	
-	@GetMapping(path = "/compareSector")
-//	@HystrixCommand(fallbackMethod = "defaultResponse")
+	@PostMapping(path = "/compareSector")
 	public ResponseEntity<?> sectorComparison(@RequestBody SectorCompareRequestDto compareRequest)
 	{
 		List<StockPriceDto> stockPriceDtos = null;
@@ -77,7 +75,6 @@ public class StockPriceController
 		}
 		return ResponseEntity.ok(stockPriceDtos);
 	}
-//	4
 	@PostMapping(path = "/")
 	public ResponseEntity<?> save(@RequestBody List<StockPriceDto> stockPriceDtos) {
 		
@@ -91,22 +88,18 @@ public class StockPriceController
 				.status(HttpStatus.CREATED)
 				.body(stockList);
 	}
-//	5
 	
 	
 	@PutMapping(path = "")
 	public ResponseEntity<StockPriceDto> update(@RequestBody StockPriceDto stockPriceDto)
-//			throws StockPriceNotFoundException
 	{
 		StockPriceDto updatedStockPriceDto = stockPriceService.update(stockPriceDto);
 		if(updatedStockPriceDto == null) {
 			System.out.println("No row updated");
 			return null;
-//			throw new StockPriceNotFoundException("Stock Price not found with id : " + stockPriceDto.getId());
 		}
 		return ResponseEntity.ok(updatedStockPriceDto);
 	}
-//	6
 	@DeleteMapping(path = "/{id}")
 	public void deleteById(@PathVariable int id) {
 		stockPriceService.deleteById(id);
@@ -117,26 +110,9 @@ public class StockPriceController
 	{
 		
 		JsonDto summary=stockPriceService.saveAll(jsonObj);
-//		for(StockPriceDto stockPrice: stockPriceList)
-//			System.out.println(stockPrice);
-		for(JSONObject j: jsonObj)
-		{
-			System.out.println(j);
-		}
-//		if(stockPriceList.isEmpty())
-//			return null;
+		
 		System.out.println(summary.toString());
 		return ResponseEntity.ok(summary);
 	}
 	
-//	7
-//	/* Feign Client Default Response */
-//	
-//	public ResponseEntity<?> defaultResponse(@RequestBody SectorCompareRequestDto compareRequest) {
-//		String err = "Fallback error as the microservice is down.";
-//		return ResponseEntity
-//				.status(HttpStatus.SERVICE_UNAVAILABLE)
-//				.body(err);
-//	}
 }
-

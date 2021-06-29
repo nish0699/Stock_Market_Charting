@@ -46,9 +46,6 @@ public class StockExchangeServiceImpl implements StockExchangeService {
 		StockExchange stockExchange =stockExchangeRepository.findById(id);
 		if(stockExchange==null)
 			return null;
-//		System.out.println(stockExchange.toString());
-//
-//		System.out.println(stockExchangeMapper.toStockExchangeDto(stockExchange).toString());
 		return stockExchangeMapper.toStockExchangeDto(stockExchange);
 	}
 
@@ -86,7 +83,12 @@ public class StockExchangeServiceImpl implements StockExchangeService {
 	@Override
 	public void deleteStockExchange(int id) {
 		// TODO Auto-generated method stub
-		stockExchangeRepository.deleteById(id);
+		StockExchange st=stockExchangeRepository.findById(id);
+		if(st!=null)
+		{
+			System.out.println("Stockto delete " +st.toString());
+			stockExchangeRepository.deleteById(id);
+		}
 		
 	}
 
@@ -96,7 +98,6 @@ public class StockExchangeServiceImpl implements StockExchangeService {
 		StockExchange stockExchange=stockExchangeRepository.findById(id);
 		List<Company> companyList=stockExchange.getCompanyList();
 		return companyMapper.toCompanyDtos(companyList);
-//		return null;
 	}
 
 	@Override
@@ -106,16 +107,11 @@ public class StockExchangeServiceImpl implements StockExchangeService {
 		if(stockExchange==null)
 			return null;
 		Company company=companyRepository.findById(companyDto.getId());
-//		company.setSector1(sectorRepository.findBySectorName(company.getSector()));
 		
 		if(company!=null)
 		{
 		stockExchange.addCompany(company);
 		stockExchange=stockExchangeRepository.save(stockExchange);
-//		System.out.println("List"+stockExchange.getCompanyList());
-//		System.out.println("Company to add = "+company.toString()+"\n stock exchange added to ="+stockExchange.toString());	
-//		for(Company s: stockExchange.getCompanyList())
-//			System.out.println("comapnies "+s);
 		return stockExchangeMapper.toStockExchangeDto(stockExchange);
 		}
 		

@@ -25,31 +25,24 @@ public class IpoController
 {
 	@Autowired
 	private IpoService ipoService;
-//	1
 	@GetMapping(path = "")
 	public ResponseEntity<List<IpoDto>> findAll() {
 		return ResponseEntity.ok(ipoService.findAll());
 	}
-//	2
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<IpoDto> findById(@PathVariable int id)
-			//throws IpoNotFoundException
 	{
 		IpoDto ipoDto = ipoService.findById(id);
 		if(ipoDto == null) {
-//			throw new IpoNotFoundException("Ipo not found for id : " + id);
 		}
 		return ResponseEntity.ok(ipoDto);
 	}
-//	3
 	@PostMapping(path = "/add-ipo")
 	public ResponseEntity<IpoDto> save(@RequestBody IpoDto ipoDto)
-//			throws CompanyNotFoundException
 	{
 		
 		IpoDto addedIpoDto = ipoService.save(ipoDto);
 		if(addedIpoDto == null) {
-//			throw new CompanyNotFoundException("Company not found with name : " + ipoDto.getCompanyName());
 			System.out.println("ipo not added");
 			return null;
 		}
@@ -57,10 +50,8 @@ public class IpoController
 				.status(HttpStatus.CREATED)
 				.body(addedIpoDto);
 	}
-//	4
 	@PutMapping(path = "/update-ipo/{id}")
 	public ResponseEntity<IpoDto> update(@RequestBody IpoDto ipoDto,@PathVariable int id)
-//			throws IpoNotFoundException
 	{
 		if(ipoDto==null)
 			return null;
@@ -69,11 +60,9 @@ public class IpoController
 		if(updatedIpoDto == null) {
 			System.out.println("ipo not updated");
 			return null;
-//			throw new IpoNotFoundException("Ipo not found for id : " + ipoDto.getId());
 		}
 		return ResponseEntity.ok(updatedIpoDto);
 	}
-//	5
 	@CrossOrigin(origins="http://localhost:3000")
 	@DeleteMapping(path = "/{id}")
 	public void deleteById(@PathVariable int id) {
