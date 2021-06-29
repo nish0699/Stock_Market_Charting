@@ -1,4 +1,4 @@
-package com.example.jwttest.demo.security.services;
+package com.application.StockMarketCharting.security.services;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
